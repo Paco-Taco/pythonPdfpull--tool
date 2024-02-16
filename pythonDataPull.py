@@ -24,7 +24,7 @@ def save_codes_xl(codes, excel_file):
 
 def main():
     pdf_file = "hisense.pdf" # PDF file
-    excel_file= "demo.xlsx"
+    excel_file= "demo.xlsx" # Output .xlsx file
     codes = extract_pdf_codes(pdf_file)
     save_codes_xl(codes, excel_file)
     print("PDF codes saved successfully")
