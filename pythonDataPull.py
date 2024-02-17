@@ -1,22 +1,29 @@
 import PyPDF2
 from openpyxl import Workbook
+import re
 
 def extract_pdf_codes(pdf_file):
     codes = []
     with open(pdf_file, "rb") as file:
         pdf_reader = PyPDF2.PdfReader(file)
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text = page.extract_text()
-            
-            codes.append(text)
+        startOn = int(input("Start on page: "))
+        if startOn > 0: 
+            for page_num in range(startOn - 1, len(pdf_reader.pages)):
+                page = pdf_reader.pages[page_num]
+                text = page.extract_text()
+                matches = re.findall(r'\b\d+\s*•\s*\d{7}\b', text) # Checar si todos los códigos de parte tengan la misma extensión
+                codes.extend(matches)
+        
+            return codes
 
-        return codes
+        else: 
+            print("Invalid page number. Try again") 
+            exit()
     
 def save_codes_xl(codes, excel_file):
     wb = Workbook()
     ws = wb.active
-    ws.append(["Code"]) # Header
+    ws.append(["Part No."]) # Header
 
     for code in codes:
         ws.append([code])
@@ -29,5 +36,4 @@ def main():
     save_codes_xl(codes, excel_file)
     print("PDF codes saved successfully")
 
-if __name__ == "__main__":
-    main()
+main()
